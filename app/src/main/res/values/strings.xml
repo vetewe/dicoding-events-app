@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">DicodingEvent</string>
+    <string name="title_home">Home</string>
+    <string name="title_upcoming">Upcoming</string>
+    <string name="title_finished">finished</string>
+    <string name="title_profile">Profile</string>
+    <string name="word">Dicoding Event</string>
+    <string name="upcoming_events">Upcoming Events</string>
+    <string name="finished_events">Finished Events</string>
+    <string name="my_name">Vira Tiara Witri</string>
+    <string name="email">vtiaraw2@gmail.com</string>
+</resources>
