@@ -14,6 +14,9 @@
     <string name="remaining_quota">Remaining Quota</string>
     <string name="operator">Operator</string>
     <string name="description">Description</string>
+    <string name="regist">Register</string>
+    <string name="not_found">Event Not Found</string>
+    <string name="no_internet">No Internet Connection</string>
     <string name="my_name">Vira Tiara Witri</string>
     <string name="email">vtiaraw2@gmail.com</string>
 </resources>

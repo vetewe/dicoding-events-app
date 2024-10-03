@@ -11,13 +11,16 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import android.widget.SearchView
 import com.dicoding.dicodingevent.databinding.FragmentUpcomingBinding
 import com.dicoding.dicodingevent.adapter.UpcomingEventAdapter
-import com.dicoding.dicodingevent.ui.DetailActivity
+import com.dicoding.dicodingevent.ui.detail.DetailActivity
+import android.widget.Toast
+import com.dicoding.dicodingevent.data.response.ListEventsItem
 
 class UpcomingFragment : Fragment() {
     private var _binding: FragmentUpcomingBinding? = null
     private val binding get() = _binding!!
     private lateinit var upcomingViewModel: UpcomingViewModel
     private lateinit var upcomingAdapter: UpcomingEventAdapter
+    private var originalUpcomingEvents: List<ListEventsItem> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,10 +33,9 @@ class UpcomingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        upcomingViewModel = ViewModelProvider(requireActivity())[UpcomingViewModel::class.java]
 
-        upcomingViewModel = ViewModelProvider(this)[UpcomingViewModel::class.java]
-
-        setupRecyclerView()
+        setupUpcomingEventsRecyclerView()
         observeEvents()
 
         binding.searchViewUpcoming.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -43,18 +45,26 @@ class UpcomingFragment : Fragment() {
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return false
+                val filteredList = if (newText.isNullOrEmpty()) {
+                    originalUpcomingEvents
+                } else {
+                    originalUpcomingEvents.filter { it.name?.contains(newText, true) == true }
+                }
+                upcomingAdapter.submitList(filteredList)
+                return true
             }
         })
 
-        upcomingViewModel.getUpcomingEvents()
+        if (upcomingViewModel.upcomingEvents.value == null) {
+            upcomingViewModel.getUpcomingEvents()
+        }
     }
 
-    private fun setupRecyclerView() {
+    private fun setupUpcomingEventsRecyclerView() {
         upcomingAdapter = UpcomingEventAdapter { event ->
             val intent = Intent(requireContext(), DetailActivity::class.java)
             intent.putExtra("EVENT_ID", event.id)
-            intent.putExtra("IS_FINISHED_EVENT", false) // Menandakan bahwa ini adalah event yang akan datang
+            intent.putExtra("IS_FINISHED_EVENT", false)
             startActivity(intent)
         }
         binding.rvUpcomingEvents.apply {
@@ -65,12 +75,20 @@ class UpcomingFragment : Fragment() {
 
     private fun observeEvents() {
         upcomingViewModel.upcomingEvents.observe(viewLifecycleOwner) { events ->
-            upcomingAdapter.submitList(events)
+            originalUpcomingEvents = events
             binding.progressBar.visibility = View.GONE
+            upcomingAdapter.submitList(events)
         }
 
         upcomingViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        upcomingViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+            binding.progressBar.visibility = View.GONE
+            message?.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

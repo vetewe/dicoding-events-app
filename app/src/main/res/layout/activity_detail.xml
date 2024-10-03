@@ -42,7 +42,7 @@
             android:layout_marginBottom="8dp"
             android:gravity="center"
             android:text="@string/event_summary"
-            android:textSize="16sp"
+            android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/media_cover" />
@@ -74,30 +74,30 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textAlignment="center"
                 android:text="@string/event_time"
-                android:textSize="14sp" />
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/operator"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textAlignment="center"
                 android:text="@string/operator"
-                android:textSize="14sp" />
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/remaining_quota"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textStyle="bold"
-                android:textAlignment="center"
                 android:text="@string/remaining_quota"
-                android:textSize="14sp" />
+                android:textAlignment="center"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <TextView
@@ -106,13 +106,33 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:justificationMode="inter_word"
-            android:lineSpacingExtra="4dp"
+            android:lineSpacingExtra="2dp"
             android:text="@string/description"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/linearLayout"
             tools:ignore="MissingConstraints,UnusedAttribute" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:cardCornerRadius="16dp"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteX="50dp"
+            tools:layout_editor_absoluteY="320dp" />
+
+        <Button
+            android:id="@+id/button_register"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/rounded_button"
+            android:text="@string/regist"
+            android:textColor="@color/white"
+            app:layout_constraintTop_toBottomOf="@+id/description"
+            tools:layout_editor_absoluteX="16dp" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -1,6 +1,5 @@
 package com.dicoding.dicodingevent.ui.home
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -21,48 +20,59 @@ class HomeViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
 
-    fun getUpcomingEvents() {
-        if (_isLoading.value == true) return
-        val client = ApiConfig.getApiService().getEvent("1")
-        client.enqueue(object : Callback<EventResponse> {
+    fun getEvents() {
+        if (_upcomingEvents.value != null && _finishedEvents.value != null) return
+
+        _isLoading.value = true
+
+        val clientUpcoming = ApiConfig.getApiService().getEvent("1")
+        clientUpcoming.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 if (response.isSuccessful) {
-                    _upcomingEvents.value = response.body()?.listEvents?.filterNotNull() ?: emptyList()
+                    _upcomingEvents.value =
+                        response.body()?.listEvents?.filterNotNull() ?: emptyList()
                 } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
+                    _errorMessage.value = "Error: ${response.message()}"
                 }
-                _isLoading.value = false
+                checkLoadingStatus()
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}")
-                _isLoading.value = false
+                _errorMessage.value = "Failure: ${t.message}"
+                checkLoadingStatus()
+            }
+        })
+
+        val clientFinished = ApiConfig.getApiService().getEvent("0")
+        clientFinished.enqueue(object : Callback<EventResponse> {
+            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
+                if (response.isSuccessful) {
+                    _finishedEvents.value =
+                        response.body()?.listEvents?.filterNotNull() ?: emptyList()
+                } else {
+                    _errorMessage.value = "Error: ${response.message()}"
+                }
+                checkLoadingStatus()
+            }
+
+            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
+                _errorMessage.value = "Failure: ${t.message}"
+                checkLoadingStatus()
             }
         })
     }
 
-    fun getFinishedEvents() {
-        if (_isLoading.value == true) return
-        val client = ApiConfig.getApiService().getEvent("0")
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    _finishedEvents.value = response.body()?.listEvents?.filterNotNull() ?: emptyList()
-                } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                }
-                _isLoading.value = false
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}")
-                _isLoading.value = false
-            }
-        })
+    private fun checkLoadingStatus() {
+        if (_upcomingEvents.value != null && _finishedEvents.value != null) {
+            _isLoading.value = false
+        }
     }
 
     companion object {
         private const val TAG = "HomeViewModel"
     }
 }
+

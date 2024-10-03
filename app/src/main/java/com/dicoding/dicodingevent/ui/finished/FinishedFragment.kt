@@ -11,7 +11,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.dicodingevent.adapter.FinishedEventAdapter
 import com.dicoding.dicodingevent.databinding.FragmentFinishedBinding
-import com.dicoding.dicodingevent.ui.DetailActivity
+import com.dicoding.dicodingevent.ui.detail.DetailActivity
+import android.widget.Toast
+import com.dicoding.dicodingevent.data.response.ListEventsItem
 
 class FinishedFragment : Fragment() {
 
@@ -19,6 +21,7 @@ class FinishedFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var finishedViewModel: FinishedViewModel
     private lateinit var finishedAdapter: FinishedEventAdapter
+    private var originalFinishedEvents: List<ListEventsItem> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,31 +34,37 @@ class FinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        finishedViewModel = ViewModelProvider(this).get(FinishedViewModel::class.java)
+        finishedViewModel = ViewModelProvider(requireActivity())[FinishedViewModel::class.java]
 
         setupFinishedEventsRecyclerView()
         observeEvents()
 
         binding.searchViewFinished.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                finishedViewModel.getFinishedEvents(query)
-                return true
+                return false
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                return false
+                val filteredList = if (newText.isNullOrEmpty()) {
+                    originalFinishedEvents
+                } else {
+                    originalFinishedEvents.filter { it.name?.contains(newText, true) == true }
+                }
+                finishedAdapter.submitList(filteredList)
+                return true
             }
         })
 
-        finishedViewModel.getFinishedEvents()
+        if (finishedViewModel.finishedEvents.value == null) {
+            finishedViewModel.getFinishedEvents()
+        }
     }
 
     private fun setupFinishedEventsRecyclerView() {
         finishedAdapter = FinishedEventAdapter { event ->
             val intent = Intent(requireContext(), DetailActivity::class.java)
-            intent.putExtra("EVENT_ID", event.id) // Mengirim ID event
-            intent.putExtra("IS_FINISHED_EVENT", true) // Menandakan bahwa ini adalah event selesai
+            intent.putExtra("EVENT_ID", event.id)
+            intent.putExtra("IS_FINISHED_EVENT", true)
             startActivity(intent)
         }
         binding.rvFinishedEvents.apply {
@@ -66,12 +75,20 @@ class FinishedFragment : Fragment() {
 
     private fun observeEvents() {
         finishedViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
+            originalFinishedEvents = events
+            binding.progressBar.visibility = View.GONE
             finishedAdapter.submitList(events)
-            binding.progressBar.visibility = View.GONE // Sembunyikan loading
         }
 
         finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        finishedViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+            binding.progressBar.visibility = View.GONE
+            message?.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.dicodingevent.databinding.FragmentHomeBinding
 import com.dicoding.dicodingevent.adapter.FinishedEventAdapter
 import com.dicoding.dicodingevent.adapter.UpcomingEventAdapter
-import com.dicoding.dicodingevent.ui.DetailActivity
-
+import com.dicoding.dicodingevent.ui.detail.DetailActivity
+import android.widget.Toast
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -32,22 +32,20 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        homeViewModel = ViewModelProvider(this).get(HomeViewModel::class.java)
+        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
 
         setupUpcomingEventsRecyclerView()
         setupFinishedEventsRecyclerView()
         observeEvents()
 
-        homeViewModel.getUpcomingEvents()
-        homeViewModel.getFinishedEvents()
+        homeViewModel.getEvents()
     }
 
     private fun setupUpcomingEventsRecyclerView() {
         upcomingAdapter = UpcomingEventAdapter { event ->
             val intent = Intent(requireContext(), DetailActivity::class.java)
             intent.putExtra("EVENT_ID", event.id)
-            intent.putExtra("IS_FINISHED_EVENT", false) // Menandakan bahwa ini adalah event yang akan datang
+            intent.putExtra("IS_FINISHED_EVENT", false)
             startActivity(intent)
         }
         binding.rvUpcomingEvents.apply {
@@ -60,7 +58,7 @@ class HomeFragment : Fragment() {
         finishedAdapter = FinishedEventAdapter { event ->
             val intent = Intent(requireContext(), DetailActivity::class.java)
             intent.putExtra("EVENT_ID", event.id)
-            intent.putExtra("IS_FINISHED_EVENT", true) // Menandakan bahwa ini adalah event yang telah selesai
+            intent.putExtra("IS_FINISHED_EVENT", true)
             startActivity(intent)
         }
         binding.rvFinishedEvents.apply {
@@ -70,16 +68,23 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeEvents() {
-        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
-
         homeViewModel.upcomingEvents.observe(viewLifecycleOwner) { events ->
             upcomingAdapter.submitList(events.take(5))
         }
 
         homeViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
             finishedAdapter.submitList(events.take(5))
+        }
+
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
+        homeViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
+            binding.progressBar.visibility = View.GONE
+            message?.let {
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

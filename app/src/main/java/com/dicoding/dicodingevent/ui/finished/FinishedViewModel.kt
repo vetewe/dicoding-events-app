@@ -1,8 +1,11 @@
 package com.dicoding.dicodingevent.ui.finished
 
-import android.util.Log
-import androidx.lifecycle.*
-import com.dicoding.dicodingevent.data.response.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.dicoding.dicodingevent.data.response.EventResponse
+import com.dicoding.dicodingevent.data.response.ListEventsItem
+
 import com.dicoding.dicodingevent.data.retrofit.ApiConfig
 import retrofit2.*
 
@@ -13,23 +16,28 @@ class FinishedViewModel : ViewModel() {
     private val _isLoading = MutableLiveData<Boolean>()
     val isLoading: LiveData<Boolean> = _isLoading
 
+    private val _errorMessage = MutableLiveData<String>()
+    val errorMessage: LiveData<String> = _errorMessage
+
     fun getFinishedEvents(query: String? = null) {
-        if (_isLoading.value == true) return // Cegah pemanggilan berulang
+        // if (_finishedEvents.value != null) return
+
         _isLoading.value = true
         val client = ApiConfig.getApiService().getEvent("0", query)
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    _finishedEvents.value = response.body()?.listEvents?.filterNotNull() ?: emptyList()
-                } else {
-                    Log.e(TAG, "onFailure: ${response.message()}")
-                }
                 _isLoading.value = false
+                if (response.isSuccessful) {
+                    _finishedEvents.value =
+                        response.body()?.listEvents?.filterNotNull() ?: emptyList()
+                } else {
+                    _errorMessage.value = "Error: ${response.message()}"
+                }
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                Log.e(TAG, "onFailure: ${t.message}")
                 _isLoading.value = false
+                _errorMessage.value = "Failure: ${t.message}"
             }
         })
     }
