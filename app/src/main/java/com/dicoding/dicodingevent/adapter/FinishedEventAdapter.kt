@@ -1,6 +1,7 @@
 package com.dicoding.dicodingevent.adapter
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -9,7 +10,7 @@ import com.bumptech.glide.Glide
 import com.dicoding.dicodingevent.data.response.ListEventsItem
 import com.dicoding.dicodingevent.databinding.ItemFinishedEventBinding
 
-class FinishedEventAdapter :
+class FinishedEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
     ListAdapter<ListEventsItem, FinishedEventAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -21,6 +22,7 @@ class FinishedEventAdapter :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val event = getItem(position)
         holder.bind(event)
+        holder.itemView.setOnClickListener { onItemClick(event) }
     }
 
     class MyViewHolder(private val binding: ItemFinishedEventBinding) :

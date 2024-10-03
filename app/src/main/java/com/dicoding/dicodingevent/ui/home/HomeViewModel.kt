@@ -18,45 +18,46 @@ class HomeViewModel : ViewModel() {
     private val _finishedEvents = MutableLiveData<List<ListEventsItem>>()
     val finishedEvents: LiveData<List<ListEventsItem>> = _finishedEvents
 
-    private var isUpcomingDataLoaded = false
-    private var isFinishedDataLoaded = false
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
 
     fun getUpcomingEvents() {
-        if (isUpcomingDataLoaded) return
-
+        if (_isLoading.value == true) return
         val client = ApiConfig.getApiService().getEvent("1")
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 if (response.isSuccessful) {
                     _upcomingEvents.value = response.body()?.listEvents?.filterNotNull() ?: emptyList()
-                    isUpcomingDataLoaded = true
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
                 }
+                _isLoading.value = false
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}")
+                _isLoading.value = false
             }
         })
     }
 
     fun getFinishedEvents() {
-        if (isFinishedDataLoaded) return
-
+        if (_isLoading.value == true) return
         val client = ApiConfig.getApiService().getEvent("0")
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 if (response.isSuccessful) {
                     _finishedEvents.value = response.body()?.listEvents?.filterNotNull() ?: emptyList()
-                    isFinishedDataLoaded = true
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
                 }
+                _isLoading.value = false
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}")
+                _isLoading.value = false
             }
         })
     }

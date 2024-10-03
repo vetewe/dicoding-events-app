@@ -10,8 +10,13 @@ class UpcomingViewModel : ViewModel() {
     private val _upcomingEvents = MutableLiveData<List<ListEventsItem>>()
     val upcomingEvents: LiveData<List<ListEventsItem>> = _upcomingEvents
 
-    fun getUpcomingEvents() {
-        val client = ApiConfig.getApiService().getEvent("1")
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> = _isLoading
+
+    fun getUpcomingEvents(query: String? = null) {
+        if (_isLoading.value == true) return // Cegah pemanggilan berulang
+        _isLoading.value = true
+        val client = ApiConfig.getApiService().getEvent("1", query)
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
                 if (response.isSuccessful) {
@@ -19,10 +24,12 @@ class UpcomingViewModel : ViewModel() {
                 } else {
                     Log.e(TAG, "onFailure: ${response.message()}")
                 }
+                _isLoading.value = false
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
                 Log.e(TAG, "onFailure: ${t.message}")
+                _isLoading.value = false
             }
         })
     }

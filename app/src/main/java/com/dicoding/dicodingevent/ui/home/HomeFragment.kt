@@ -1,5 +1,6 @@
 package com.dicoding.dicodingevent.ui.home
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dicoding.dicodingevent.databinding.FragmentHomeBinding
 import com.dicoding.dicodingevent.adapter.FinishedEventAdapter
 import com.dicoding.dicodingevent.adapter.UpcomingEventAdapter
+import com.dicoding.dicodingevent.ui.DetailActivity
 
 
 class HomeFragment : Fragment() {
@@ -42,7 +44,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupUpcomingEventsRecyclerView() {
-        upcomingAdapter = UpcomingEventAdapter()
+        upcomingAdapter = UpcomingEventAdapter { event ->
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+            intent.putExtra("EVENT_ID", event.id)
+            intent.putExtra("IS_FINISHED_EVENT", false) // Menandakan bahwa ini adalah event yang akan datang
+            startActivity(intent)
+        }
         binding.rvUpcomingEvents.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
             adapter = upcomingAdapter
@@ -50,7 +57,12 @@ class HomeFragment : Fragment() {
     }
 
     private fun setupFinishedEventsRecyclerView() {
-        finishedAdapter = FinishedEventAdapter()
+        finishedAdapter = FinishedEventAdapter { event ->
+            val intent = Intent(requireContext(), DetailActivity::class.java)
+            intent.putExtra("EVENT_ID", event.id)
+            intent.putExtra("IS_FINISHED_EVENT", true) // Menandakan bahwa ini adalah event yang telah selesai
+            startActivity(intent)
+        }
         binding.rvFinishedEvents.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = finishedAdapter
@@ -58,12 +70,16 @@ class HomeFragment : Fragment() {
     }
 
     private fun observeEvents() {
+        homeViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
+            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+        }
+
         homeViewModel.upcomingEvents.observe(viewLifecycleOwner) { events ->
             upcomingAdapter.submitList(events.take(5))
         }
 
         homeViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
-            finishedAdapter.submitList(events)
+            finishedAdapter.submitList(events.take(5))
         }
     }
 

@@ -9,7 +9,7 @@ import com.bumptech.glide.Glide
 import com.dicoding.dicodingevent.data.response.ListEventsItem
 import com.dicoding.dicodingevent.databinding.ItemUpcomingEventBinding
 
-class UpcomingEventAdapter :
+class UpcomingEventAdapter(private val onItemClick: (ListEventsItem) -> Unit) :
     ListAdapter<ListEventsItem, UpcomingEventAdapter.MyViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
@@ -21,6 +21,7 @@ class UpcomingEventAdapter :
     override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
         val event = getItem(position)
         holder.bind(event)
+        holder.itemView.setOnClickListener { onItemClick(event) }
     }
 
     class MyViewHolder(private val binding: ItemUpcomingEventBinding) :
