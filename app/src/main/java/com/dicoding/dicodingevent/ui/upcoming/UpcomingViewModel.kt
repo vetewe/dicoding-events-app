@@ -19,8 +19,7 @@ class UpcomingViewModel : ViewModel() {
     val errorMessage: LiveData<String> = _errorMessage
 
     fun getUpcomingEvents(query: String? = null) {
-        if (_upcomingEvents.value != null) return
-
+//        if (_upcomingEvents.value != null) return
         _isLoading.value = true
         val client = ApiConfig.getApiService().getEvent("1", query)
         client.enqueue(object : Callback<EventResponse> {
@@ -30,7 +29,7 @@ class UpcomingViewModel : ViewModel() {
                     _upcomingEvents.value =
                         response.body()?.listEvents?.filterNotNull() ?: emptyList()
                 } else {
-                    _errorMessage.value = "Error: ${response.message()}"
+                    _errorMessage.value = "Load Data Failed: ${response.message()}"
                 }
             }
 
@@ -39,9 +38,5 @@ class UpcomingViewModel : ViewModel() {
                 _errorMessage.value = "Failure: ${t.message}"
             }
         })
-    }
-
-    companion object {
-        private const val TAG = "UpcomingViewModel"
     }
 }

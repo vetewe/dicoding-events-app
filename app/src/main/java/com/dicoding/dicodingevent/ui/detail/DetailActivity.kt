@@ -80,8 +80,4 @@ class DetailActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
-
-    companion object {
-        private const val TAG = "DetailActivity"
-    }
 }

@@ -32,8 +32,9 @@
             android:id="@+id/tv_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:textSize="16sp"
+            android:layout_marginStart="4dp"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/iv_image_logo"
             app:layout_constraintTop_toTopOf="@id/iv_image_logo" />
     </androidx.constraintlayout.widget.ConstraintLayout>

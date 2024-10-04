@@ -41,7 +41,7 @@ class HomeViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _errorMessage.value = "Failure: ${t.message}"
+                _errorMessage.value = "Load Data Failed: ${t.message}"
                 checkLoadingStatus()
             }
         })
@@ -59,7 +59,7 @@ class HomeViewModel : ViewModel() {
             }
 
             override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _errorMessage.value = "Failure: ${t.message}"
+                _errorMessage.value = "Load Data Failed: ${t.message}"
                 checkLoadingStatus()
             }
         })
@@ -69,10 +69,6 @@ class HomeViewModel : ViewModel() {
         if (_upcomingEvents.value != null && _finishedEvents.value != null) {
             _isLoading.value = false
         }
-    }
-
-    companion object {
-        private const val TAG = "HomeViewModel"
     }
 }
 

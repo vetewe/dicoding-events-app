@@ -13,7 +13,6 @@ import com.dicoding.dicodingevent.adapter.FinishedEventAdapter
 import com.dicoding.dicodingevent.databinding.FragmentFinishedBinding
 import com.dicoding.dicodingevent.ui.detail.DetailActivity
 import android.widget.Toast
-import com.dicoding.dicodingevent.data.response.ListEventsItem
 
 class FinishedFragment : Fragment() {
 
@@ -21,7 +20,6 @@ class FinishedFragment : Fragment() {
     private val binding get() = _binding!!
     private lateinit var finishedViewModel: FinishedViewModel
     private lateinit var finishedAdapter: FinishedEventAdapter
-    private var originalFinishedEvents: List<ListEventsItem> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,25 +37,21 @@ class FinishedFragment : Fragment() {
         setupFinishedEventsRecyclerView()
         observeEvents()
 
+        finishedViewModel.getFinishedEvents()
+
         binding.searchViewFinished.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-                return false
+                finishedViewModel.getFinishedEvents(query)
+                return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-                val filteredList = if (newText.isNullOrEmpty()) {
-                    originalFinishedEvents
-                } else {
-                    originalFinishedEvents.filter { it.name?.contains(newText, true) == true }
+                if (newText.isNullOrEmpty()) {
+                    finishedViewModel.getFinishedEvents()
                 }
-                finishedAdapter.submitList(filteredList)
-                return true
+                return false
             }
         })
-
-        if (finishedViewModel.finishedEvents.value == null) {
-            finishedViewModel.getFinishedEvents()
-        }
     }
 
     private fun setupFinishedEventsRecyclerView() {
@@ -75,15 +69,17 @@ class FinishedFragment : Fragment() {
 
     private fun observeEvents() {
         finishedViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
-            originalFinishedEvents = events
-            binding.progressBar.visibility = View.GONE
             finishedAdapter.submitList(events)
-        }
 
+            if (events.isEmpty()) {
+                binding.tvEventNotFound.visibility = View.VISIBLE
+            } else {
+                binding.tvEventNotFound.visibility = View.GONE
+            }
+        }
         finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-
         finishedViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             binding.progressBar.visibility = View.GONE
             message?.let {

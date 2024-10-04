@@ -20,8 +20,7 @@ class FinishedViewModel : ViewModel() {
     val errorMessage: LiveData<String> = _errorMessage
 
     fun getFinishedEvents(query: String? = null) {
-        // if (_finishedEvents.value != null) return
-
+//        if (_finishedEvents.value != null) return
         _isLoading.value = true
         val client = ApiConfig.getApiService().getEvent("0", query)
         client.enqueue(object : Callback<EventResponse> {
@@ -31,7 +30,7 @@ class FinishedViewModel : ViewModel() {
                     _finishedEvents.value =
                         response.body()?.listEvents?.filterNotNull() ?: emptyList()
                 } else {
-                    _errorMessage.value = "Error: ${response.message()}"
+                    _errorMessage.value = "Load Data Failed: ${response.message()}"
                 }
             }
 
@@ -40,9 +39,5 @@ class FinishedViewModel : ViewModel() {
                 _errorMessage.value = "Failure: ${t.message}"
             }
         })
-    }
-
-    companion object {
-        private const val TAG = "FinishedViewModel"
     }
 }
