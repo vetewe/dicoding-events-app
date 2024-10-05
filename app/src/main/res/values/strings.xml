@@ -5,7 +5,6 @@
     <string name="title_finished">finished</string>
     <string name="title_profile">Profile</string>
     <string name="word">Dicoding Event</string>
-    <string name="search_hint">Search Event</string>
     <string name="upcoming_events">Upcoming Events</string>
     <string name="finished_events">Finished Events</string>
     <string name="event_name">Event Name</string>
@@ -16,7 +15,6 @@
     <string name="description">Description</string>
     <string name="regist">Register</string>
     <string name="event_not_found">Event Not Found</string>
-    <string name="no_internet">No Internet Connection</string>
     <string name="my_name">Vira Tiara Witri</string>
     <string name="email">vtiaraw2@gmail.com</string>
 </resources>

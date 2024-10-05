@@ -1,23 +1,24 @@
 [versions]
-agp = "8.6.0"
+agp = "8.6.1"
 circleimageview = "3.1.0"
-glide = "4.15.1"
+glide = "4.16.0"
 kotlin = "1.9.0"
 coreKtx = "1.13.1"
 junit = "4.13.2"
 junitVersion = "1.2.1"
 espressoCore = "3.6.1"
 appcompat = "1.7.0"
-loggingInterceptor = "4.10.0"
+loggingInterceptor = "4.11.0"
 material = "1.12.0"
 constraintlayout = "2.1.4"
 lifecycleLivedataKtx = "2.8.6"
 lifecycleViewmodelKtx = "2.8.6"
-navigationFragmentKtx = "2.8.1"
-navigationUiKtx = "2.8.1"
+navigationFragmentKtx = "2.8.2"
+navigationUiKtx = "2.8.2"
 retrofit = "2.9.0"
 activity = "1.9.2"
 carUiLib = "2.6.0"
+fragment = "1.8.4"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -38,6 +39,7 @@ androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
+androidx-fragment = { group = "androidx.fragment", name = "fragment", version.ref = "fragment" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
