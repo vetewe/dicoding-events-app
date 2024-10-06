@@ -19,8 +19,7 @@ class UpcomingViewModel : ViewModel() {
     val errorMessage: LiveData<String> = _errorMessage
 
     fun getUpcomingEvents(query: String? = null) {
-//        if (_upcomingEvents.value != null) return
-        _isLoading.value = true
+        if (_isLoading.value == true) return
         val client = ApiConfig.getApiService().getEvent("1", query)
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {

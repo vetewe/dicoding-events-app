@@ -20,8 +20,7 @@ class FinishedViewModel : ViewModel() {
     val errorMessage: LiveData<String> = _errorMessage
 
     fun getFinishedEvents(query: String? = null) {
-//        if (_finishedEvents.value != null) return
-        _isLoading.value = true
+        if (_isLoading.value == true) return
         val client = ApiConfig.getApiService().getEvent("0", query)
         client.enqueue(object : Callback<EventResponse> {
             override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
