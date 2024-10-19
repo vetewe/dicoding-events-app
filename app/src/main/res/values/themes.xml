@@ -1,11 +1,8 @@
 <resources>
-    <!-- Base application theme. -->
     <style name="Theme.DicodingEvent" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/deep_seag</item>
-        <item name="colorOnPrimary">@color/dull_seag</item>
-        <!-- Secondary brand color. -->
-        <item name="colorSecondary">@color/dark_greenb</item>
+        <item name="colorPrimary">@color/deep_sea_green</item>
+        <item name="colorOnPrimary">@color/dull_sea_green</item>
+        <item name="colorSecondary">@color/dark_green_b</item>
         <item name="colorOnSecondary">@color/bottle_green</item>
     </style>
 </resources>

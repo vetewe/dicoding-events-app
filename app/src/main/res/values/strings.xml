@@ -3,7 +3,8 @@
     <string name="title_home">Home</string>
     <string name="title_upcoming">Upcoming</string>
     <string name="title_finished">finished</string>
-    <string name="title_profile">Profile</string>
+    <string name="title_favorite">Favorite</string>
+    <string name="title_setting">Setting</string>
     <string name="word">Dicoding Event</string>
     <string name="upcoming_events">Upcoming Events</string>
     <string name="finished_events">Finished Events</string>
@@ -13,8 +14,16 @@
     <string name="remaining_quota">Remaining Quota</string>
     <string name="operator">Operator</string>
     <string name="description">Description</string>
-    <string name="regist">Register</string>
+    <string name="register">Register</string>
     <string name="event_not_found">Event Not Found</string>
     <string name="my_name">Vira Tiara Witri</string>
     <string name="email">vtiaraw2@gmail.com</string>
+    <string name="dark_mode">Dark Mode</string>
+    <string name="daily_reminder">Enable Daily Reminder</string>
+    <string name="favorite_event">Favorite Event</string>
+    <string name="no_favorite">You dont have any favorite event</string>
+    <string name="remaining_quota_detail">Remaining Quota: \n%d</string>
+    <string name="go_to_website">Go To Website</string>
+    <string name="error_message">Error occurred</string>
+    <string name="event_has_finished">Event Has Finished</string>
 </resources>

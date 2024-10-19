@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="deep_seag">#306754</color>
-    <color name="dull_seag">#4E8975</color>
-    <color name="dark_greenb">#1F6357</color>
+    <color name="deep_sea_green">#306754</color>
+    <color name="dull_sea_green">#4E8975</color>
+    <color name="dark_green_b">#1F6357</color>
     <color name="bottle_green">#006A4E</color>
     <color name="white">#FFFFFFFF</color>
 </resources>

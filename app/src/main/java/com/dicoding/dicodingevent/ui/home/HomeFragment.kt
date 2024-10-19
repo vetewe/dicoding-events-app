@@ -5,14 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dicoding.dicodingevent.databinding.FragmentHomeBinding
+import com.dicoding.dicodingevent.R
 import com.dicoding.dicodingevent.adapter.FinishedEventAdapter
 import com.dicoding.dicodingevent.adapter.UpcomingEventAdapter
+import com.dicoding.dicodingevent.databinding.FragmentHomeBinding
+import com.dicoding.dicodingevent.ui.ViewModelFactory
 import com.dicoding.dicodingevent.ui.detail.DetailActivity
-import android.widget.Toast
 
 class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
@@ -32,7 +34,7 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeViewModel = ViewModelProvider(requireActivity())[HomeViewModel::class.java]
+        homeViewModel = ViewModelProvider(this, ViewModelFactory.getInstance(requireActivity()))[HomeViewModel::class.java]
 
         setupUpcomingEventsRecyclerView()
         setupFinishedEventsRecyclerView()
@@ -83,7 +85,7 @@ class HomeFragment : Fragment() {
         homeViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             binding.progressBar.visibility = View.GONE
             message?.let {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.error_message), Toast.LENGTH_SHORT).show()
             }
         }
     }

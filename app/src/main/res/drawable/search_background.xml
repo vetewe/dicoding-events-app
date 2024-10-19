@@ -2,11 +2,11 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#FFFFFF"/> <!-- Warna latar belakang -->
-            <corners android:radius="16dp"/> <!-- Radius sudut -->
+            <solid android:color="#00000000"/>
+            <corners android:radius="16dp"/>
             <stroke
                 android:width="2dp"
-                android:color="#306754"/> <!-- Warna border hijau -->
+                android:color="#306754"/>
         </shape>
     </item>
 </layer-list>

@@ -1,5 +1,6 @@
 package com.dicoding.dicodingevent.data.retrofit
 
+import com.dicoding.dicodingevent.BuildConfig
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -11,7 +12,7 @@ class ApiConfig {
             val loggingInterceptor =
                 HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient.Builder().addInterceptor(loggingInterceptor).build()
-            val retrofit = Retrofit.Builder().baseUrl("https://event-api.dicoding.dev/")
+            val retrofit = Retrofit.Builder().baseUrl(BuildConfig.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create()).client(client).build()
             return retrofit.create(ApiService::class.java)
         }

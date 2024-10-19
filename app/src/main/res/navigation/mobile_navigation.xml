@@ -24,8 +24,15 @@
         tools:layout="@layout/fragment_finished" />
 
     <fragment
-        android:id="@+id/navigation_profile"
-        android:name="com.dicoding.dicodingevent.ui.profile.ProfileFragment"
-        android:label="@string/title_profile"
-        tools:layout="@layout/fragment_profile"/>
+        android:id="@+id/navigation_favorite"
+        android:name="com.dicoding.dicodingevent.ui.favorite.FavoriteFragment"
+        android:label="@string/title_favorite"
+        tools:layout="@layout/fragment_favorite" />
+
+    <fragment
+        android:id="@+id/navigation_setting"
+        android:name="com.dicoding.dicodingevent.ui.setting.SettingFragment"
+        android:label="@string/title_setting"
+        tools:layout="@layout/fragment_setting" />
+
 </navigation>

@@ -9,6 +9,7 @@ interface ApiService {
     fun getEvent(
         @Query("active") active: String? = null,
         @Query("q") query: String? = null,
-        @Query("id") id: String? = null
+        @Query("id") id: String? = null,
+        @Query("limit") limit: String? = null
     ): Call<EventResponse>
 }
