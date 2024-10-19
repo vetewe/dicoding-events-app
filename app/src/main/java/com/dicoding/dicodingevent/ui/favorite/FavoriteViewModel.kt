@@ -10,7 +10,7 @@ import kotlinx.coroutines.launch
 
 class FavoriteViewModel(private val repository: EventRepository) : ViewModel() {
     val allFavorites: LiveData<List<FavoriteEvent>> = repository.getAllFavorites()
-    val isLoading = MutableLiveData(true)
+    val isLoading = MutableLiveData<Boolean>()
 
     init {
         allFavorites.observeForever {
@@ -23,4 +23,5 @@ class FavoriteViewModel(private val repository: EventRepository) : ViewModel() {
             repository.deleteFavoriteById(id)
         }
     }
+
 }

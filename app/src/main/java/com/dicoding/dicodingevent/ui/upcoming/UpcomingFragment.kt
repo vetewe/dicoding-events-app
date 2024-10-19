@@ -6,13 +6,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import android.widget.Toast
-import com.dicoding.dicodingevent.ui.detail.DetailActivity
+import com.dicoding.dicodingevent.R
 import com.dicoding.dicodingevent.adapter.UpcomingEventAdapter
 import com.dicoding.dicodingevent.databinding.FragmentUpcomingBinding
+import com.dicoding.dicodingevent.ui.detail.DetailActivity
 
 class UpcomingFragment : Fragment() {
 
@@ -46,12 +47,14 @@ class UpcomingFragment : Fragment() {
         binding.searchViewUpcoming.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 upcomingViewModel.getUpcomingEvents(query)
+                binding.progressBar.visibility = View.VISIBLE
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
                 if (newText.isNullOrEmpty()) {
                     upcomingViewModel.getUpcomingEvents()
+                    binding.progressBar.visibility = View.VISIBLE
                 }
                 return false
             }
@@ -86,7 +89,7 @@ class UpcomingFragment : Fragment() {
         upcomingViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             binding.progressBar.visibility = View.GONE
             message?.let {
-                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.error_message), Toast.LENGTH_SHORT).show()
             }
         }
     }

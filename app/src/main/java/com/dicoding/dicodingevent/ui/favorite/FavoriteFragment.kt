@@ -35,6 +35,7 @@ class FavoriteFragment : Fragment() {
 
         setupRecyclerView()
         observeFavorites()
+
     }
 
     private fun setupRecyclerView() {
@@ -57,7 +58,6 @@ class FavoriteFragment : Fragment() {
         favoriteViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
             binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
         }
-
         favoriteViewModel.allFavorites.observe(viewLifecycleOwner) { favorites ->
             if (favorites.isEmpty()) {
                 binding.tvNoFavorites.visibility = View.VISIBLE
