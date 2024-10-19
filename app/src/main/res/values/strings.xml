@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">DicodingEvent</string>
     <string name="title_home">Home</string>
     <string name="title_upcoming">Upcoming</string>
@@ -16,8 +16,8 @@
     <string name="description">Description</string>
     <string name="register">Register</string>
     <string name="event_not_found">Event Not Found</string>
-    <string name="my_name">Vira Tiara Witri</string>
-    <string name="email">vtiaraw2@gmail.com</string>
+    <string name="my_name" tools:ignore="UnusedResources">Vira Tiara Witri</string>
+    <string name="email" tools:ignore="UnusedResources">vtiaraw2@gmail.com</string>
     <string name="dark_mode">Dark Mode</string>
     <string name="daily_reminder">Enable Daily Reminder</string>
     <string name="favorite_event">Favorite Event</string>
