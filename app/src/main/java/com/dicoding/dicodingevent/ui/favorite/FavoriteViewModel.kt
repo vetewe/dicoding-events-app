@@ -12,12 +12,6 @@ class FavoriteViewModel(private val repository: EventRepository) : ViewModel() {
     val allFavorites: LiveData<List<FavoriteEvent>> = repository.getAllFavorites()
     val isLoading = MutableLiveData<Boolean>()
 
-    init {
-        allFavorites.observeForever {
-            isLoading.value = false
-        }
-    }
-
     fun deleteFavoriteById(id: String) {
         viewModelScope.launch {
             repository.deleteFavoriteById(id)

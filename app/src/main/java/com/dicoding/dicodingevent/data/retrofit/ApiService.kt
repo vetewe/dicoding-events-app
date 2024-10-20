@@ -6,10 +6,10 @@ import retrofit2.http.*
 
 interface ApiService {
     @GET("events")
-    fun getEvent(
+    suspend fun getEvent(
         @Query("active") active: String? = null,
         @Query("q") query: String? = null,
         @Query("id") id: String? = null,
         @Query("limit") limit: String? = null
-    ): Call<EventResponse>
+    ): EventResponse
 }

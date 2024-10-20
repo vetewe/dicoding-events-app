@@ -3,12 +3,11 @@ package com.dicoding.dicodingevent.ui.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.dicoding.dicodingevent.data.response.EventResponse
 import com.dicoding.dicodingevent.data.response.ListEventsItem
 import com.dicoding.dicodingevent.data.retrofit.ApiConfig
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
+import kotlinx.coroutines.launch
 
 class HomeViewModel : ViewModel() {
     private val _upcomingEvents = MutableLiveData<List<ListEventsItem>>()
@@ -27,42 +26,19 @@ class HomeViewModel : ViewModel() {
         if (_upcomingEvents.value != null && _finishedEvents.value != null) return
 
         _isLoading.value = true
+        viewModelScope.launch {
+            try {
+                val upcomingResponse = ApiConfig.getApiService().getEvent("1")
+                _upcomingEvents.postValue(upcomingResponse.listEvents?.filterNotNull() ?: emptyList())
 
-        val clientUpcoming = ApiConfig.getApiService().getEvent("1")
-        clientUpcoming.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    _upcomingEvents.value =
-                        response.body()?.listEvents?.filterNotNull() ?: emptyList()
-                } else {
-                    _errorMessage.value = "Error: ${response.message()}"
-                }
-                checkLoadingStatus()
+                val finishedResponse = ApiConfig.getApiService().getEvent("0")
+                _finishedEvents.postValue(finishedResponse.listEvents?.filterNotNull() ?: emptyList())
+            } catch (e: Exception) {
+                _errorMessage.postValue("Load Data Failed: ${e.message}")
+            } finally {
+                _isLoading.postValue(false)
             }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _errorMessage.value = "Load Data Failed: ${t.message}"
-                checkLoadingStatus()
-            }
-        })
-
-        val clientFinished = ApiConfig.getApiService().getEvent("0")
-        clientFinished.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                if (response.isSuccessful) {
-                    _finishedEvents.value =
-                        response.body()?.listEvents?.filterNotNull() ?: emptyList()
-                } else {
-                    _errorMessage.value = "Error: ${response.message()}"
-                }
-                checkLoadingStatus()
-            }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _errorMessage.value = "Load Data Failed: ${t.message}"
-                checkLoadingStatus()
-            }
-        })
+        }
     }
 
     private fun checkLoadingStatus() {

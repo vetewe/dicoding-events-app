@@ -3,11 +3,10 @@ package com.dicoding.dicodingevent.ui.finished
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.dicoding.dicodingevent.data.response.EventResponse
+import androidx.lifecycle.viewModelScope
 import com.dicoding.dicodingevent.data.response.ListEventsItem
-
 import com.dicoding.dicodingevent.data.retrofit.ApiConfig
-import retrofit2.*
+import kotlinx.coroutines.launch
 
 class FinishedViewModel : ViewModel() {
     private val _finishedEvents = MutableLiveData<List<ListEventsItem>>()
@@ -20,23 +19,15 @@ class FinishedViewModel : ViewModel() {
     val errorMessage: LiveData<String> = _errorMessage
 
     fun getFinishedEvents(query: String? = null) {
-        if (_isLoading.value == true) return
-        val client = ApiConfig.getApiService().getEvent("0", query)
-        client.enqueue(object : Callback<EventResponse> {
-            override fun onResponse(call: Call<EventResponse>, response: Response<EventResponse>) {
-                _isLoading.value = false
-                if (response.isSuccessful) {
-                    _finishedEvents.value =
-                        response.body()?.listEvents?.filterNotNull() ?: emptyList()
-                } else {
-                    _errorMessage.value = "Load Data Failed: ${response.message()}"
-                }
+        viewModelScope.launch {
+            try {
+                val response = ApiConfig.getApiService().getEvent("0", query)
+                _finishedEvents.postValue(response.listEvents?.filterNotNull() ?: emptyList())
+                _isLoading.postValue(false)
+            } catch (e: Exception) {
+                _errorMessage.postValue("Load Data Failed: ${e.message}")
+                _isLoading.postValue(false)
             }
-
-            override fun onFailure(call: Call<EventResponse>, t: Throwable) {
-                _isLoading.value = false
-                _errorMessage.value = "Failure: ${t.message}"
-            }
-        })
+        }
     }
 }

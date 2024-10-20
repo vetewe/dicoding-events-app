@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dicoding.dicodingevent.R
 import com.dicoding.dicodingevent.adapter.FinishedEventAdapter
 import com.dicoding.dicodingevent.databinding.FragmentFinishedBinding
 import com.dicoding.dicodingevent.ui.detail.DetailActivity
@@ -39,6 +38,10 @@ class FinishedFragment : Fragment() {
         observeEvents()
 
         finishedViewModel.getFinishedEvents()
+
+        finishedViewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
+        }
 
         binding.searchViewFinished.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -73,6 +76,7 @@ class FinishedFragment : Fragment() {
     private fun observeEvents() {
         finishedViewModel.finishedEvents.observe(viewLifecycleOwner) { events ->
             finishedAdapter.submitList(events)
+            binding.progressBar.visibility = View.GONE
 
             if (events.isEmpty()) {
                 binding.tvEventNotFound.visibility = View.VISIBLE
@@ -80,15 +84,17 @@ class FinishedFragment : Fragment() {
                 binding.tvEventNotFound.visibility = View.GONE
             }
         }
-        finishedViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
+
         finishedViewModel.errorMessage.observe(viewLifecycleOwner) { message ->
             binding.progressBar.visibility = View.GONE
             message?.let {
-                Toast.makeText(context, getString(R.string.error_message), Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {

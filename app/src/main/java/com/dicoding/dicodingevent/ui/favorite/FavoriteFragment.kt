@@ -32,10 +32,12 @@ class FavoriteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         setupRecyclerView()
-        observeFavorites()
+        observeViewModel()
 
+        favoriteViewModel.isLoading.observe(viewLifecycleOwner) {
+            showLoading(it)
+        }
     }
 
     private fun setupRecyclerView() {
@@ -54,20 +56,22 @@ class FavoriteFragment : Fragment() {
         binding.rvFavoriteEvents.adapter = adapter
     }
 
-    private fun observeFavorites() {
-        favoriteViewModel.isLoading.observe(viewLifecycleOwner) { isLoading ->
-            binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
-        }
+    private fun observeViewModel() {
         favoriteViewModel.allFavorites.observe(viewLifecycleOwner) { favorites ->
+            adapter.submitList(favorites)
+            binding.progressBar.visibility = View.GONE
             if (favorites.isEmpty()) {
                 binding.tvNoFavorites.visibility = View.VISIBLE
                 binding.rvFavoriteEvents.visibility = View.GONE
             } else {
                 binding.tvNoFavorites.visibility = View.GONE
                 binding.rvFavoriteEvents.visibility = View.VISIBLE
-                adapter.submitList(favorites)
             }
         }
+    }
+
+    private fun showLoading(isLoading: Boolean) {
+        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
     }
 
     override fun onDestroyView() {
